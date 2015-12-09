@@ -38,10 +38,16 @@ gen logcountrytotaltrade = log(countrytotaltrade)
 gen logcountrytotalexp = log(countrytotalexp)
 gen logcountrytotalimp = log(countrytotalimp)
 
-regress logcountrytotaltrade peopletrust
-regress logcountrytotaltrade neighbortrust
-regress logcountrytotaltrade familytrust
-regress logcountrytotaltrade personaltrust
-regress logcountrytotaltrade othercountrytrust
+regress logcountrytotaltrade peopletrust loggdp
+regress countrytradepercentofgdp peopletrust
+regress logcountrytotaltrade neighbortrust loggdp
+regress countrytradepercentofgdp neighbortrust
+regress logcountrytotaltrade familytrust loggdp
+regress countrytradepercentofgdp familytrust
+regress logcountrytotaltrade personaltrust loggdp
+regress countrytradepercentofgdp personaltrust
+regress logcountrytotaltrade othercountrytrust loggdp
+regress countrytradepercentofgdp othercountrytrust
 regress logvalue bilateraltrust
+
 

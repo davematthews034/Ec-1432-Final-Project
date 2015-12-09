@@ -27,14 +27,21 @@ gen logexports = log(value) if flow == "EXP"
 gen logimports = log(value) if flow == "IMP"
 gen logfdi = log(netfdi)
 
-egen countrytotaltrades = sum(value), by(reportercountry)
+egen countrytotaltrade = sum(value), by(reportercountry)
 * Because of Stata's odd groupings, you need to replace ill-placed values 
 * (i.e. exports in the imports category) with null values.
 egen countrytotalexp = sum(value), by(reportercountry flow)
 egen countrytotalimp = sum(value), by(reportercountry flow)
 replace countrytotalexp = . if flow == "IMP"
 replace countrytotalimp = . if flow == "EXP"
-gen logcountrytotaltrades = log(countrytotaltrades)
+gen logcountrytotaltrade = log(countrytotaltrade)
 gen logcountrytotalexp = log(countrytotalexp)
 gen logcountrytotalimp = log(countrytotalimp)
+
+regress logcountrytotaltrade peopletrust
+regress logcountrytotaltrade neighbortrust
+regress logcountrytotaltrade familytrust
+regress logcountrytotaltrade personaltrust
+regress logcountrytotaltrade othercountrytrust
+regress logvalue bilateraltrust
 

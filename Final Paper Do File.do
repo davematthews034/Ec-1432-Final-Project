@@ -15,7 +15,7 @@
 *
 * European Commission (2012): Eurobarometer 46.0 (Oct-Nov 1996). INRA, Brussels. GESIS Data Archive, Cologne. ZA2898 Data file Version 1.0.1, doi:10.4232/1.10923
 *
-*
+* http://tjpeiffer.com/crowflies.html
 *
 
 import delimited "/Users/Dave/Desktop/Ec 1432/Final Paper/dataset.csv", encoding(ISO-8859-1)clear
@@ -39,15 +39,67 @@ gen logcountrytotalexp = log(countrytotalexp)
 gen logcountrytotalimp = log(countrytotalimp)
 
 regress logcountrytotaltrade peopletrust loggdp
-regress countrytradepercentofgdp peopletrust
+estimates store m1, title(People)
+
 regress logcountrytotaltrade neighbortrust loggdp
-regress countrytradepercentofgdp neighbortrust
+estimates store m2, title(Neighbor)
+
 regress logcountrytotaltrade familytrust loggdp
-regress countrytradepercentofgdp familytrust
+estimates store m3, title(Family)
+
 regress logcountrytotaltrade personaltrust loggdp
-regress countrytradepercentofgdp personaltrust
+estimates store m4, title(Personal)
+
 regress logcountrytotaltrade othercountrytrust loggdp
+estimates store m5, title(OthCountry)
+
+estout m1 m2 m3 m4 m5, cells(b(star fmt(3)) se(par fmt(2)))   ///
+   legend label varlabels(_cons constant)               ///
+   stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
+estimates clear
+
+regress countrytradepercentofgdp peopletrust
+estimates store m1, title(People)
+regress countrytradepercentofgdp neighbortrust
+estimates store m2, title(Neighbor)
+regress countrytradepercentofgdp familytrust
+estimates store m3, title(Family)
+regress countrytradepercentofgdp personaltrust
+estimates store m4, title(Personal)
 regress countrytradepercentofgdp othercountrytrust
-regress logvalue bilateraltrust
+estimates store m5, title(OthCountry)
+
+estout m1 m2 m3 m4 m5, cells(b(star fmt(3)) se(par fmt(2)))   ///
+   legend label varlabels(_cons constant)               ///
+   stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
+estimates clear
+
+regress logvalue bilateraltrust loggdp
+regress countrytradepercentofgdp bilateraltrust
+
+# Robustness check
+regress logfdi bilateraltrust loggdp
+regress netfdigdp bilateraltrust
+
+# Introducing controls
+regress logvalue bilateraltrust loggdp
+estimates store m1, title(Base)
+regress logvalue bilateraltrust loggdp englishrate
+estimates store m2, title(Base+Eng)
+regress logvalue bilateraltrust loggdp englishrate laworigins
+estimates store m3, title(+Law)
+regress logvalue bilateraltrust loggdp englishrate laworigins rel_sim
+estimates store m4, title(+Rel_Sim)
+regress logvalue bilateraltrust loggdp englishrate laworigins rel_sim logdis
+estimates store m5, title(+Log Dis)
+estout m1 m2 m3 m4 m5, cells(b(star fmt(3)) se(par fmt(2)))   ///
+   legend label varlabels(_cons constant)               ///
+   stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
+estimates clear
+
+# For the gravity equation
+gen logdis = log(distance)
+gen logpartnergdp = log(partnergdp)
+
 
 

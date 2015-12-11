@@ -117,7 +117,16 @@ regress logexports bilateraltrust loggdp logpartnergdp logdis
 estimates store m2, title(Exports)
 regress logimports bilateraltrust loggdp logpartnergdp logdis
 estimates store m3, title(Imports)
+regress logvalue bilateraltrust loggdp logpartnergdp logdis mutualenglish
+estimates store m4, title(+ ENG)
+regress logvalue bilateraltrust loggdp logpartnergdp logdis mutualenglish laworigins
+estimates store m5, title(+ LAW)
+regress logvalue bilateraltrust loggdp logpartnergdp logdis mutualenglis laworigins rel_sim
+estimates store m6, title(+ REL)
 estout m1 m2 m3, cells(b(star fmt(3)) se(par fmt(2)))   ///
+   legend label varlabels(_cons constant)               ///
+   stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
+estout m1 m4 m5 m6, cells(b(star fmt(3)) se(par fmt(2)))   ///
    legend label varlabels(_cons constant)               ///
    stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
 estimates clear

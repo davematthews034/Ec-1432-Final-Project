@@ -38,6 +38,10 @@ gen logcountrytotaltrade = log(countrytotaltrade)
 gen logcountrytotalexp = log(countrytotalexp)
 gen logcountrytotalimp = log(countrytotalimp)
 
+* For the gravity equation
+gen logdis = log(distance)
+gen logpartnergdp = log(partnergdp)
+
 regress logcountrytotaltrade peopletrust loggdp
 estimates store m1, title(People)
 
@@ -97,9 +101,17 @@ estout m1 m2 m3 m4 m5, cells(b(star fmt(3)) se(par fmt(2)))   ///
    stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
 estimates clear
 
-# For the gravity equation
-gen logdis = log(distance)
-gen logpartnergdp = log(partnergdp)
+regress logvalue bilateraltrust loggdp logpartnergdp logdis
+estimates store m1, title(Total Trade)
+regress logexports bilateraltrust loggdp logpartnergdp logdis
+estimates store m2, title(Exports)
+regress logimports bilateraltrust loggdp logpartnergdp logdis
+estimates store m3, title(Imports)
+estout m1 m2 m3, cells(b(star fmt(3)) se(par fmt(2)))   ///
+   legend label varlabels(_cons constant)               ///
+   stats(r2 df_r bic, fmt(3 0 1) label(R-sqr dfres BIC))
+estimates clear
+
 
 
 
